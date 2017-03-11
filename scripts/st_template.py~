@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+
+import smach
+import smach_ros
+
+import os
+
+#ここから上は必須モジュール
+#ここから下は必要に応じて追加
+
+#音声認識を使う#####
+import actionlib
+
+from dev_smach_pkg.msg import SpeechRecAction
+from dev_smach_pkg.msg import SpeechRecGoal 
+####################
+
+#音声合成を使う#####
+from speech_syn import speech_single #音声合成を現スレッドで起動(喋り終わるまで待つ)
+from speech_syn import speech_multi #音声合成を他スレッドで起動
+####################
+
+
+
+#デバッグモード用、1ステートずつ止めて検証する
+def dbg_sm_statebystate():
+    if rospy.get_param('/param/dbg/sm/statebystate') == 1:
+        raw_input('#####Type enter key to enter next state#####')
+
+#----------ステートマシン設計規則----------
+#ステートを跨ぐデータはパラメータ(/params/以下)に保存する
+
+
+
+#このプログラムのステートマシンの宣言部分
+class MainState(smach.StateMachine):
+    def __init__(self):
+        smach.StateMachine.__init__(self, outcomes=['exit'])
+        with self:
+        #以降にステートを追加
+            smach.StateMachine.add('State1',State1(),transitions={'exit':'State2'})
+            smach.StateMachine.add('State2',State2(),transitions={'exit':'exit'})
+
+
+#最初に実行されるステート
+class State1(smach.State):
+    def __init__(self):
+        smach.State.__init__(self,outcomes=['exit'])
+
+    def execute(self,userdata):
+        rospy.loginfo(u'ファイル名:'+os.path.basename(__file__)+u'ステート名:'+self.__class__.__name__+u'を実行')
+        dbg_sm_statebystate()
+        
+        #ここに処理を記述
+
+        return 'exit'
+
+#二番目に実行されるステート
+class State2(smach.State):
+    def __init__(self):
+        smach.State.__init__(self,outcomes=['exit'])
+
+    def execute(self,userdata):
+        rospy.loginfo(u'ファイル名:'+os.path.basename(__file__)+u'ステート名:'+self.__class__.__name__+u'を実行')
+        dbg_sm_statebystate()
+
+        #ここに処理を記述
+
+        return 'exit'

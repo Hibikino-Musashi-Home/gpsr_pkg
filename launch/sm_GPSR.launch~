@@ -1,0 +1,8 @@
+<!-- -*- mode: XML -*- -->
+
+<launch>
+    <node pkg="GPSR_pkg" type="param_GPSR.py" name="params"/>
+    <node pkg="GPSR_pkg" type="speech_rec_GPSR.py" name="speech_rec" output="screen"/>
+    <node pkg="GPSR_pkg" type="sm_GPSR.py" name="sm_GPSR" output="screen"/>
+    <!--<node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer"/>-->
+</launch>
